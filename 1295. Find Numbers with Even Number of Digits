@@ -38,3 +38,24 @@ class Solution(object):
             if(i>=10 and i<100) or (i>=1000 and i<10000):
                 s+=1
         return s
+
+or
+
+class Solution(object):
+    def findNumbers(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        even_number = 0
+        
+        for num in nums:
+            digit = 0
+            while num > 0:
+                num = num//10
+                digit = digit + 1
+            
+            if digit % 2 == 0:
+                even_number = even_number + 1
+        
+        return even_number
