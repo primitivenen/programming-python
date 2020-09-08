@@ -36,3 +36,9 @@ class Solution:
                 obj.append(nums[i+1])
             i = i + 2
         return obj
+        
+def decompressRLElist(self, nums: List[int]) -> List[int]:
+    output = []
+    for i in range(int(len(nums)/2)):
+        output.extend([nums[2*i+1] for k in range(nums[2*i])])
+    return output
