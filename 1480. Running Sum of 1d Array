@@ -35,3 +35,9 @@ class Solution:
             temp = res[i]
         return res
             
+    def runningSum(self, nums: List[int]) -> List[int]:
+        rs, s = [], 0
+        for i in nums:
+            s += i
+            rs.append(s)
+        return rs
