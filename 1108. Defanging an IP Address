@@ -27,3 +27,9 @@ class Solution(object):
         :rtype: str
         """
         return address.replace('.','[.]')
+
+class Solution:
+    def defangIPaddr(self, address: str) -> str:
+        address = address.split('.')
+        newS = '[.]'
+        return newS.join(address)
