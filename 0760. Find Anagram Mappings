@@ -22,3 +22,16 @@ class Solution:
         for a in A:
             obj.append(B.index(a))
         return obj
+
+class Solution:
+    def anagramMappings(self, A: List[int], B: List[int]) -> List[int]:
+        ind = {}
+        ans = []
+        for i in range(len(B)):
+            ind[B[i]] = i
+        
+        for i in A:
+            if i in ind.keys():
+                ans.append(ind[i])
+        
+        return ans
