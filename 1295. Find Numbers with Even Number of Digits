@@ -59,3 +59,12 @@ class Solution(object):
                 even_number = even_number + 1
         
         return even_number
+        
+
+class Solution:
+    def findNumbers(self, nums: List[int]) -> int:
+        cnt = 0
+        for n in nums:
+            if len(str(n)) % 2 == 0:
+                cnt = cnt + 1
+        return cnt
