@@ -61,3 +61,19 @@ class Solution:
             
         return new_list
         
+class Solution:
+    def highFive(self, items: List[List[int]]) -> List[List[int]]:
+        d = collections.defaultdict(list)
+        
+        for id, score in items:
+            if len(d[id]) < 5:
+                heapq.heappush(d[id], score)
+            else:
+                if score > d[id][0]:
+                    heapq.heappop(d[id])
+                    heapq.heappush(d[id], score)
+        res = []
+        for key, score in d.items():
+            res.append([key, sum(score) // len(score)])
+            
+        return res
