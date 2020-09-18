@@ -1,0 +1,74 @@
+Given an array A of non-negative integers, half of the integers in A are odd, and half of the integers are even.
+
+Sort the array so that whenever A[i] is odd, i is odd; and whenever A[i] is even, i is even.
+
+You may return any answer array that satisfies this condition.
+
+ 
+
+Example 1:
+
+Input: [4,2,5,7]
+Output: [4,5,2,7]
+Explanation: [4,7,2,5], [2,5,4,7], [2,7,4,5] would also have been accepted.
+ 
+
+Note:
+
+2 <= A.length <= 20000
+A.length % 2 == 0
+0 <= A[i] <= 1000
+ 
+class Solution:
+    def sortArrayByParityII(self, A: List[int]) -> List[int]:
+        i = 0
+        n = len(A)
+        ans_even = []
+        ans_odd = []
+        ans = []
+        for a in A:
+            if a % 2 == 0:
+                ans_even.append(a)
+            else:
+                ans_odd.append(a)
+        i = 0
+        while i < len(ans_even):
+            ans.append(ans_even[i])
+            ans.append(ans_odd[i])
+            i = i + 1
+        return ans
+
+class Solution(object):
+    def sortArrayByParityII(self, A):
+        """
+        :type A: List[int]
+        :rtype: List[int]
+        """
+        r_array =[None]*len(A)
+        
+        a_even=0
+        a_odd=1
+        for each_element in A:
+            if each_element %2 ==0:
+                r_array[a_even] = each_element
+                a_even +=2
+            else:
+                r_array[a_odd] = each_element
+                a_odd +=2
+        return r_array
+        
+ class Solution:
+    def sortArrayByParityII(self, A: List[int]) -> List[int]:
+        i = 0
+        n = len(A)
+        ans_even = []
+        ans_odd = []
+        ans = []
+        for a in A:
+            if a % 2 == 0:
+                ans_even.append(a)
+            else:
+                ans_odd.append(a)
+        from itertools import chain
+        ans = list(chain(*zip(ans_even, ans_odd)))
+        return ans
