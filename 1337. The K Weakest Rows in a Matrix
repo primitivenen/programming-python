@@ -58,3 +58,6 @@ class Solution:
             i = i + 1
         lst = sorted(obj.items(), key=lambda x:x[1])[:k]
         return [i[0] for i in lst]
+
+priority queue:
+
