@@ -37,3 +37,14 @@ class Solution:
             if p.left != None:
                 self.invertTree(p.left)
             return root  
+
+
+class Solution:
+    def invertTree(self, root):
+        if root is not None:
+            temp = root.right
+            root.right = root.left
+            root.left = temp
+            self.invertTree(root.left)
+            self.invertTree(root.right)
+        return root
