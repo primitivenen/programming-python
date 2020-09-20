@@ -35,3 +35,11 @@ class Solution:
             res.add(tmp)
             
         return len(res)
+
+class Solution:
+    def numUniqueEmails(self, emails: List[str]) -> int:
+        return len(set(self.validate(email) for email in emails))
+        
+    def validate(self, email):
+        domain, name = email.split("@")
+        return f"{domain.replace('.', '').split('+')[0]}@{name}"
