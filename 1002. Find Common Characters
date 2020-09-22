@@ -35,3 +35,11 @@ class Solution:
             if min_value!=0:
                 res.extend(k*min_value)
         return res
+
+from collections import Counter
+class Solution:
+    def commonChars(self, A: List[str]) -> List[str]:
+        common = Counter(A[0])        
+        for word in A[1:]:
+            common &= Counter(word)            
+        return common.elements()
