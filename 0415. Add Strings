@@ -1,0 +1,41 @@
+Given two non-negative integers num1 and num2 represented as string, return the sum of num1 and num2.
+
+Note:
+
+The length of both num1 and num2 is < 5100.
+Both num1 and num2 contains only digits 0-9.
+Both num1 and num2 does not contain any leading zero.
+You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+class Solution:
+    def addStrings(self, num1: str, num2: str) -> str:
+        len1 = len(num1)
+        len2 = len(num2)
+        i = len1 - 1
+        j = len2 - 1
+        result = ""
+        round_up = 0
+        while i>=0 or j>=0:
+            
+            if i>=0 and j>=0: 
+                tmp_sum = round_up + int(num1[i]) + int(num2[j])
+
+            elif i>=0:
+                tmp_sum = round_up + int(num1[i])
+            
+            elif j>=0:
+                tmp_sum = round_up + int(num2[j])
+            
+            if tmp_sum >= 10:
+                tmp_sum -= 10
+                round_up = 1
+            else:
+                round_up = 0
+            result = str(tmp_sum) + result
+                
+            i = i - 1
+            j = j - 1
+        if round_up !=0:
+            return str(round_up) + result 
+        return result
+                
