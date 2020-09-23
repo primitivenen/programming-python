@@ -32,9 +32,37 @@ class Solution:
             return 1
         return self.fib(N-1) + self.fib(N-2)
         
- class Solution:
-    def fib(self, N: int) -> int:
-        lst=[0,1]
-        for i in range(2,100):
-            lst.append(lst[i-2]+lst[i-1])
-        return lst[N]
+class Solution(object):
+    def fib1(self, N):
+        if N == 0:
+            return 0
+        dp = [0] * (N+1)
+        dp[1] = 1
+        for i in range(2, N+1):
+            dp[i] = dp[i-1] + dp[i-2]
+        return dp[-1]
+    
+    def fib2(self, N):
+        if N == 0:
+            return 0
+        a, b = 0, 1
+        for i in range(2, N+1):
+            a, b = b, a+b
+        return b
+        
+    def fib3(self, N):
+        if N == 0 or N == 1:
+            return N
+        return self.fib(N-1) + self.fib(N-2)
+    
+    def fib(self, N):
+        m = {}
+        return self.dfs(N, m)
+    
+    def dfs(self, N, m):
+        if N == 0 or N == 1:
+            return N
+        if N in m:
+            return m[N]
+        m[N] = self.dfs(N-1, m) + self.dfs(N-2, m)
+        return m[N]
