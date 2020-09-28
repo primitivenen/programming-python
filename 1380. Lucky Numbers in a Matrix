@@ -43,13 +43,12 @@ class Solution:
         
         return ret
         
-class Solution:
- def luckyNumbers (self, matrix: List[List[int]]) -> List[int]:
-  ans = []
-  for i in range(len(matrix)):
-    ele = min(matrix[i])
-    pos = matrix[i].index(ele)
-    column = [matrix[t][pos] for t in range(len(matrix)) ]
-  if ele==max(column):
-   ans.append(ele)
-   return ans
+    def luckyNumbers (self, matrix: List[List[int]]) -> List[int]:
+        ans = []
+        for i in range(len(matrix)):
+            ele = min(matrix[i])
+            pos = matrix[i].index(ele)
+            column = [matrix[t][pos] for t in range(len(matrix)) ]
+            if ele==max(column):
+                ans.append(ele)
+        return ans
