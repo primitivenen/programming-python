@@ -30,3 +30,14 @@ class Solution:
         else:
             ret += 'a' * n
         return ret
+
+class Solution:
+    def generateTheString(self, n: int) -> str:
+        if n%2==0:
+            a=((n-1)*'a')+'b'
+        else:
+            if n==1:
+                return 'a'
+            else:
+                a=((n-2)*'a')+'b'+'c'
+        return a
