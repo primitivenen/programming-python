@@ -44,3 +44,35 @@ class Solution:
             else:
                 stack.append(log[:-1])
         return len(stack)
+        
+   class Solution:
+    def yielder(self,A):
+        for row in A:
+            for x in row:
+                yield x
+    def matrixReshape(self, A, r, c):
+        if not A:
+            return []
+        if len(A)*len(A[0]) != r*c:
+            return A
+        #
+        gen = self.yielder(A)
+        return [ [ next(gen) for _ in range(c) ] for _ in range(r) ]
+        
+        
+  class Solution:
+    def matrixReshape(self, A, r, c):
+        if not A:
+            return []
+        m,n = len(A),len(A[0])
+        if m*n != r*c:
+            return A
+        #
+        B = []
+        for i in range(r):
+            row = []
+            for j in range(c):
+                k = i*c + j
+                row.append( A[k//n][k%n] )
+            B.append( row )
+        return B
