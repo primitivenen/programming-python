@@ -29,3 +29,15 @@ class Solution:
                     if i+2 < n:
                         res.append(text[i+2])
         return res
+
+
+class Solution:
+    def findOcurrences(self, text: str, first: str, second: str) -> List[str]:
+        result = []
+        
+        text = text.split(" ")
+        
+        for a, b, c in zip(text, text[1:], text[2:]):
+            if a == first and b == second:
+                result.append(c)
+        return result
