@@ -1,0 +1,41 @@
+Given a List of words, return the words that can be typed using letters of alphabet on only one row's of American keyboard like the image below.
+ 
+Example:
+
+Input: ["Hello", "Alaska", "Dad", "Peace"]
+Output: ["Alaska", "Dad"]
+ 
+Note:
+
+You may use one character in the keyboard more than once.
+You may assume the input string will only contain letters of alphabet.
+
+class Solution:
+    def findWords(self, words: List[str]) -> List[str]:
+        set1 = {'Q','W','E','R','T','Y','U','I','O','P'}
+        set2 = {'A','S','D','F','G','H','J','K','L'}
+        set3 = {'Z','X','C','V','B','N','M'}
+        
+        ret = []
+       
+        for w in words:
+            isalphabet = True
+            for i in range(len(w)):
+                if w[0].upper() in set1:
+                    if w[i].upper() not in set1:
+                        isalphabet = False
+                        break
+                elif w[0].upper() in set2:
+                    if w[i].upper() not in set2:
+                        isalphabet = False
+                        break
+                elif w[0].upper() in set3:
+                    if w[i].upper() not in set3:
+                        isalphabet = False
+                        break
+            if isalphabet == True:
+                ret.append(w)
+        
+        return ret
+            
+            
