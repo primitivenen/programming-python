@@ -38,4 +38,29 @@ class Solution:
         
         return ret
             
+ class Solution:
+    def findWords(self, words: List[str]) -> List[str]:
+        lst = {}
+        lst[1] = set(['Q','W','E','R','T','Y','U','I','O','P'])
+        lst[2] = set(['A','S','D','F','G','H','J','K','L'])
+        lst[3] = set(['Z','X','C','V','B','N','M'])
+        
+        ret = []        
+        
+        for w in words:
+            isalphabet = True
+            set_num = 0
+            for i in range(1, 4):
+                if w[0].upper() in lst[i]:
+                    set_num = i
+                    break
+            for i in range(len(w)):
+                if w[i].upper() not in lst[set_num]:
+                    isalphabet = False
+                    break
+            if isalphabet == True:
+                ret.append(w)
+        
+        return ret
             
+                       
