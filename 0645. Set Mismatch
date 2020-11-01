@@ -25,3 +25,5 @@ class Solution:
             elif nums2[i] == 2:
                 res[0] = i + 1
         return res
+
+return [sum(nums) - sum(set(nums)), sum(range(1, len(nums) + 1)) - sum(set(nums))]
