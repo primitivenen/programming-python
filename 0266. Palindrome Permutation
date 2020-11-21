@@ -1,0 +1,35 @@
+Given a string, determine if a permutation of the string could form a palindrome.
+
+Example 1:
+
+Input: "code"
+Output: false
+Example 2:
+
+Input: "aab"
+Output: true
+Example 3:
+
+Input: "carerac"
+Output: true
+
+class Solution:
+    def canPermutePalindrome(self, s: str) -> bool:
+        res = {}
+        
+        for c in s:
+            if c in res:
+                res[c] += 1
+            else:
+                res[c] = 1
+        
+        cnt = 0
+                
+        for k in res.keys():
+            if res[k] % 2 != 0:
+                cnt += 1
+                
+        if cnt > 1:
+            return False
+        
+        return True
