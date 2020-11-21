@@ -1,0 +1,42 @@
+Given a binary tree, return the bottom-up level order traversal of its nodes' values. (ie, from left to right, level by level from leaf to root).
+
+For example:
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return its bottom-up level order traversal as:
+[
+  [15,7],
+  [9,20],
+  [3]
+]
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrderBottom(self, root: TreeNode) -> List[List[int]]:
+        levels = []
+        if not root:
+            return levels
+        levels.append([root])
+        while levels:
+            tmp = []
+            nodes = levels[-1]
+            for node in nodes:
+                if node.left:
+                    tmp.append(node.left)
+                if node.right:
+                    tmp.append(node.right)
+            if len(tmp) > 0:
+                levels.append(tmp)
+            else:
+                break
+        return [[i.val for i in l] for l in levels[::-1]]
+        
