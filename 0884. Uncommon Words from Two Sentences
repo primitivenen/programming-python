@@ -1,0 +1,50 @@
+We are given two sentences A and B.  (A sentence is a string of space separated words.  Each word consists only of lowercase letters.)
+
+A word is uncommon if it appears exactly once in one of the sentences, and does not appear in the other sentence.
+
+Return a list of all uncommon words. 
+
+You may return the list in any order.
+
+Example 1:
+
+Input: A = "this apple is sweet", B = "this apple is sour"
+Output: ["sweet","sour"]
+Example 2:
+
+Input: A = "apple apple", B = "banana"
+Output: ["banana"]
+ 
+Note:
+
+0 <= A.length <= 200
+0 <= B.length <= 200
+A and B both contain only spaces and lowercase letters.
+
+class Solution:
+    
+    def find_common(self, a, b):
+        return [x for x in a if x not in b and a.count(x) == 1]
+    
+    def uncommonFromSentences(self, A: str, B: str) -> List[str]:
+        lena = len(A)
+        lenb = len(B)
+        
+        A = A.split()
+        B = B.split()
+        
+        return self.find_common(A, B) + self.find_common(B, A)
+        
+  class Solution(object):
+    def uncommonFromSentences(self, A, B):
+        count = {}
+        for word in A.split():
+            count[word] = count.get(word, 0) + 1
+        for word in B.split():
+            count[word] = count.get(word, 0) + 1
+
+        #Alternatively:
+        #count = collections.Counter(A.split())
+        #count += collections.Counter(B.split())
+
+        return [word for word in count if count[word] == 1]
