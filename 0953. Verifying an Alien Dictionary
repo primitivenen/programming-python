@@ -99,6 +99,24 @@ class Solution(object):
             for j in range(min(len1, len2)):
                 if order_dict[str2[j]] > order_dict[str1[j]]:
                     isGood = True
+                    
+   class Solution:
+    def ordered(self, word1, word2):
+        for chars in zip(*[word1,word2]):
+            if self.strDict[chars[0]]>self.strDict[chars[1]]: return False
+            if self.strDict[chars[0]]<self.strDict[chars[1]]: return True 
+
+        # by this time, the zip(*) chars are same. So the first str must be smaller
+        if word1>word2: return False
+        else: return True
+        
+    def isAlienSorted(self, words: List[str], order: str) -> bool:
+        self.strDict = {order[i]:i for i in range(len(order))}
+        for word_ind in range(1,len(words)):
+            if not self.ordered(words[word_ind-1],words[word_ind]):
+                return False
+            
+        return True
                     break
                 elif order_dict[str2[j]] < order_dict[str1[j]]:
                     return False
