@@ -1,0 +1,97 @@
+Given a 2D array representing the coordinates on the map, there are only values 0, 1, 2 on the map. value 0 means that it can pass, value 1 means not passable, value 2 means target place. Starting from the coordinates [0,0],You can only go up, down, left and right. Find the shortest path that can reach the destination, and return the length of the path.
+
+样例
+Example 1
+
+Input:
+[
+ [0, 0, 0],
+ [0, 0, 1],
+ [0, 0, 2]
+]
+Output: 4
+Explanation: [0,0] -> [1,0] -> [2,0] -> [2,1] -> [2,2]
+Example 2
+
+Input:
+[
+    [0,1],
+    [0,1],
+    [0,0],
+    [0,2]
+]
+Output: 4
+Explanation: [0,0] -> [1,0] -> [2,0] -> [3,0] -> [3,1]
+注意事项
+The map must exist and is not empty, there is only one target
+It is guaranteed targetMap[0][0] = 0.
+
+class MapType:
+    ROAD = 0
+    WALL = 1
+    DESTINATION = 2
+    
+DIRECTIONS = [[0, 1], [0, -1], [1,0], [-1, 0]]
+
+class Solution:
+    """
+    @param targetMap: 
+    @return: nothing
+    """
+    def shortestPath(self, targetMap):
+        # Write your code here
+        #分层 BFS
+        
+        #定义队列
+        #把所有起始点放到队列中
+        #构建数据结构记录每个点是否被访问过 visited
+        #起始点被访问过
+        #step 来记录已经走多少步
+        
+        #当队列非空，进行循环
+            #for 循环当前队列里的所有元素
+            #    把当前队列的队首pop出来
+            #    判断是否走到终点
+            #        返回走了多少步
+                    
+            #    当前元素的四个方向的元素能否加入到队列中
+            #        加入队列
+            #        visited 记录该点已经访问过
+            #step+=1    
+            
+        if len(targetMap) == 0 or len(targetMap[0]) == 0:
+            return -1
+            
+        queue = collections.deque()
+        visisted = set()
+        
+        queue.append((0, 0))
+        visisted.add((0, 0))
+        step = 0
+        
+        while queue:
+            for _ in range(len(queue)):
+                x, y = queue.popleft()
+                if targetMap[x][y] == MapType.DESTINATION:
+                    return step
+                    
+                for direction in DIRECTIONS:
+                    next_x = x + direction[0]
+                    next_y = y + direction[1]
+                    if self.is_valid(next_x, next_y, targetMap, visited):
+                        queue.append((next_x, next_y))
+                        visited.add((next_x, next_y))
+             step += 1
+        return -1
+            
+    def is_valid(self, x, y, targetMap, visited):
+        if x < 0 or y < 0 or x >= len(targetMap) or y >= len(targetMap[0]):
+            return False
+            
+        if (x, y) in visited:
+            return False
+            
+        if targetMap[x][y] == MapType.WALL:
+            return False
+            
+        return True
