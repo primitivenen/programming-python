@@ -1,0 +1,43 @@
+Find the contiguous subarray within an array (containing at least one number) which has the largest product.
+
+样例
+Example 1:
+
+Input:[2,3,-2,4]
+Output:6
+Example 2:
+
+Input:[-1,2,4,1]
+Output:8
+注意事项
+It is guaranteed that the length of nums doesn't exceed 20000
+The product of the largest subsequence of the product, less than 2147483647
+
+class Solution:
+    """
+    @param nums: An array of integers
+    @return: An integer
+    """
+    def maxProduct(self, nums):
+        # write your code here
+        n = len(nums)
+        
+        if n == 0:
+            return 0
+        
+        f = [0] * n
+        g = [0] * n
+        
+        res = -sys.maxsize - 1
+        for i in range(n):
+            f[i] = nums[i]
+            if i > 0:
+                f[i] = max(f[i], max(nums[i] * f[i-1], nums[i] * g[i-1]))
+  
+            g[i] = nums[i]
+            if i > 0:
+                g[i] = min(g[i], min(nums[i] * f[i-1], nums[i] * g[i-1]))
+            
+            res = max(res, f[i])
+            
+        return res
