@@ -1,0 +1,54 @@
+Follow up for "Unique Paths":
+
+Now consider if some obstacles are added to the grids. How many unique paths would there be?
+
+An obstacle and empty space is marked as 1 and 0 respectively in the grid.
+
+样例
+注意事项
+m and n will be at most 100.
+
+class Solution:
+    """
+    @param obstacleGrid: A list of lists of integers
+    @return: An integer
+    """
+    def uniquePathsWithObstacles(self, obstacleGrid):
+        # write your code here
+        m = len(obstacleGrid)
+        if m == 0:
+            return 0
+            
+        n = len(obstacleGrid[0])
+        if n == 0:
+            return 0
+            
+        dp = [[0]*n for _ in range(m)]
+        
+        for i in range(m):
+            for j in range(n):
+                #obstacle
+                if obstacleGrid[i][j] == 1:
+                    dp[i][j] = 0
+                    continue
+                #top left
+                if i==0 and j==0:
+                    dp[i][j] = 1
+                    continue
+                
+                if i > 0:
+                    dp[i][j] += dp[i-1][j]
+                    
+                if j > 0:
+                    dp[i][j] += dp[i][j-1]
+                    
+                print("i is " + str(i))
+                print("j is " + str(j))
+                print(dp[i][j])
+                    
+        return dp[m-1][n-1]
+                    
+                    
+                    
+                    
+                    
