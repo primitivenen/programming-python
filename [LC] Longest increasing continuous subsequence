@@ -1,0 +1,28 @@
+  def LIS(nums, n):
+        i, j = 0, 0
+        res = 0
+        f = [0] * n
+        for i in range(n):
+            f[i] = 1
+            if i > 0 and nums[i] > nums[i-1]:
+                f[i] = f[i-1] + 1
+            res = max(res, f[i])
+        return res
+        
+    def longestIncreasingSubsequence(self, nums):
+        # write your code here
+        n = len(nums)
+        if n == 0:
+            return 0
+        r1 = LIS(nums, n)
+        
+        i, j, t = 0, n-1, 0
+        while i < j:
+            t = nums[i]
+            nums[i] = nums[j]
+            nums[j] = t
+            i += 1
+            j -= 1
+        
+        r2 = LIS(nums, n)
+        return r1>r2? r1:r2
