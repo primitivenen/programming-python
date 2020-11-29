@@ -71,3 +71,28 @@ class Solution:
                     continue
                 f[now][j] = grid[i][j] + min(f[old][j], f[now][j-1])
         return f[now][n-1]
+
+class Solution:
+    """
+    @param grid: a list of lists of integers
+    @return: An integer, minimizes the sum of all numbers along its path
+    """
+    def minPathSum(self, grid):
+        # write your code here
+        m = len(grid)
+        n = len(grid[0])
+        f = [[0]*n for _ in range(2)]
+        
+        for i in range(m):
+            for j in range(n):
+                if i == 0 and j == 0:
+                    f[i%2][j] = grid[i][j]
+                    continue
+                if i == 0:
+                    f[i%2][j] = grid[i][j] + f[i%2][j-1]
+                    continue
+                if j == 0:
+                    f[i%2][j] = grid[i][j] + f[1-i%2][j]
+                    continue
+                f[i%2][j] = grid[i][j] + min(f[1-i%2][j], f[i%2][j-1])
+        return f[(m-1)%2][n-1]
