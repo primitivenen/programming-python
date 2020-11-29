@@ -35,3 +35,26 @@ class Solution:
             f[i] = max(f[i-2] + A[i-1], f[i-1])
             
         return f[n]
+
+class Solution:
+    """
+    @param A: An array of non-negative integers
+    @return: The maximum amount of money you can rob tonight
+    """
+    def houseRobber(self, A):
+        # write your code here
+        n = len(A)
+        if n == 0:
+            return 0
+        if n == 1:
+            return A[0]
+        
+        old = 0
+        now = A[0]
+
+        for i in range(2, n+1):
+            t = max(old + A[i-1], now)
+            old = now
+            now = t
+            
+        return now
