@@ -96,3 +96,46 @@ class Solution:
                     continue
                 f[i%2][j] = grid[i][j] + min(f[1-i%2][j], f[i%2][j-1])
         return f[(m-1)%2][n-1]
+
+打印路径
+class Solution:
+    """
+    @param grid: a list of lists of integers
+    @return: An integer, minimizes the sum of all numbers along its path
+    """
+    def minPathSum(self, grid):
+        # write your code here
+        m = len(grid)
+        n = len(grid[0])
+        f = [[0]*n for _ in range(m)]
+        pi = [[0]*n for _ in range(m)]
+        
+        for i in range(m):
+            for j in range(n):
+                if i == 0 and j == 0:
+                    f[i][j] = grid[i][j]
+                    continue
+                if i == 0:
+                    f[i][j] = grid[i][j] + f[i][j-1]
+                    pi[i][j] = 0
+                    continue
+                if j == 0:
+                    f[i][j] = grid[i][j] + f[i-1][j]
+                    pi[i][j] = 1
+                    continue
+                pi[i][j] = 0 if f[i-1][j] < f[i][j-1] else 1
+                f[i][j] = grid[i][j] + min(f[i-1][j], f[i][j-1])
+        
+        path = [0] * (m+n-1)
+        x = m - 1
+        y = n - 1
+        for p in range(0, m+n-1):
+            path[p] = grid[x][y]
+            if pi[x][y] == 0:
+                x -= 1
+            else:
+                y -= 1
+        for p in range(m+n-2, -1, -1):
+            print(path[p])
+        
+        return f[m-1][n-1]
