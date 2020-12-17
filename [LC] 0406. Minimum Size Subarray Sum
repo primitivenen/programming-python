@@ -66,12 +66,15 @@ class Solution:
         if nums is None:
             return -1
         
-        j = 1
+        j = 0
+        sumOfSubarray = 0
         for i in range(n):
-            while j < n and sum(nums[i:j+1]) < s:
+            while j < n and sumOfSubarray < s:
+                sumOfSubarray += nums[j]
                 j += 1
-            if sum(nums[i:j+1]) >= s:
-                minlength = min(minlength, j-i+1)
+            if sumOfSubarray >= s:
+                minlength = min(minlength, j-i)
+            sumOfSubarray -= nums[i]
                 
         if minlength==float('inf'):
             return -1
