@@ -42,3 +42,17 @@ class Solution:
             productN *= splitN[i]
             sumN += splitN[i]
         return productN - sumN
+
+ class Solution:
+     def subtractProductAndSum(self, n: int) -> int:      
+        s = []
+        while True:
+            s.append(n%10)
+            n //= 10
+            if n==0:
+                break
+                
+        prodd = math.prod(s)
+        summ = sum(s)
+        
+        return prodd - summ
