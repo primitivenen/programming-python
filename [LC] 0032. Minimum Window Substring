@@ -1,0 +1,70 @@
+Given two strings source and target. Return the minimum substring of source which contains each char of target.
+
+Example
+Example 1:
+
+Input: source = "abc", target = "ac"
+Output: "abc"
+Example 2:
+
+Input: source = "adobecodebanc", target = "abc"
+Output: "banc"
+Explanation: "banc" is the minimum substring of source string which contains each char of target "abc".
+Example 3:
+
+Input: source = "abc", target = "aa"
+Output: ""
+Explanation: No substring contains two 'a'.
+Challenge
+O(n) time
+
+Notice
+If there is no answer, return "".
+You are guaranteed that the answer is unique.
+target may contain duplicate char, while the answer need to contain at least the same number of that char.
+
+class Solution:
+    """
+    @param source : A string
+    @param target: A string
+    @return: A string denote the minimum window, return "" if there is no such a string
+    """
+    def minWindow(self, source , target):
+        # write your code here
+        if len(target) == 0 or len(source) == 0:
+            return ''
+        n = len(source)
+        m = len(target)
+        
+        j = 0
+        start, min_length = 0, float("inf")
+        matched_chars = 0
+        
+        from collections import defaultdict
+        s_counter = defaultdict(int)
+        t_counter = defaultdict(int)
+        
+        for i in range(m):
+            t_counter[target[i]] = t_counter.get(target[i], 0) + 1
+        
+        
+        for i in range(n):
+            while j < n and matched_chars < len(t_counter):
+                s_counter[source[j]] += 1
+                if s_counter[source[j]] == t_counter.get(source[j], 0):
+                    matched_chars += 1
+                
+                j += 1
+                
+            if matched_chars == len(t_counter) and j-i < min_length:
+                min_length = j-i
+                start = i
+                
+            s_counter[source[i]] -= 1
+            if s_counter[source[i]] == t_counter.get(source[i],0) - 1:
+                matched_chars -= 1
+        
+        if min_length == float('inf'):
+            return ''
+            
+        return source[start: start + min_length]
