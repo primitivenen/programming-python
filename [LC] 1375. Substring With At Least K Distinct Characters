@@ -55,3 +55,35 @@ class Solution:
                 different_chars -= 1
                 
         return num_of_substrings
+
+class Solution:
+    """
+    @param s: a string
+    @param k: an integer
+    @return: the number of substrings there are that contain at least k distinct characters
+    """
+    def kDistinctCharacters(self, s, k):
+        # Write your code here
+        from collections import defaultdict
+        if len(s) == 0:
+            return 0
+            
+        n = len(s)
+        num_of_substrings = 0
+        
+        counter = defaultdict(int)
+        j = 0
+        
+        for i in range(n):
+            while j < n and len(counter) < k:  #len(counter):number of keys in dict
+                counter[s[j]] += 1 
+                j += 1
+            
+            if len(counter) == k:
+                num_of_substrings += n-j+1
+            
+            counter[s[i]] -= 1
+            if counter[s[i]] == 0:
+                del counter[s[i]]
+                
+        return num_of_substrings
