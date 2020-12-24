@@ -21,3 +21,19 @@ class Solution:
                 else:
                     return False
         return True
+
+class Solution:
+    def helper(self, s: str, delete: int) -> bool:
+        if len(s) <= 1:
+            return True
+        
+        n = len(s)
+        for i in range(n // 2):
+            if s[i] != s[~i]:
+                return delete == 0 and (self.helper(s[i:~i], 1) or self.helper(s[i+1:n-i], 1))
+                
+        return True
+    
+    def validPalindrome(self, s: str) -> bool:                
+        return self.helper(s, 0)
+        
