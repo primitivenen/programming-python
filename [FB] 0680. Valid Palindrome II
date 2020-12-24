@@ -25,3 +25,15 @@ class Solution:
     def validPalindrome(self, s: str) -> bool:                
         return self.helper(s, 0)
         
+
+class Solution:
+    def validPalindrome(self, s: str) -> bool:
+        for i in range(len(s)//2):
+            if s[i] != s[~i]:
+                str1 = s[i+1:len(s)-i]
+                str2 = s[i:~i]
+                if str1 == str1[::-1] or str2 == str2[::-1]:
+                    return True
+                else:
+                    return False
+        return True
