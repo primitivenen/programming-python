@@ -17,76 +17,58 @@ Output: [""]
 
 class Solution:
     def removeInvalidParentheses(self, s):
-        """
-        :type s: str
-        :rtype: List[str]
-        """
 
         left = 0
         right = 0
 
-        # First, we find out the number of misplaced left and right parentheses.
         for char in s:
-
-            # Simply record the left one.
             if char == '(':
                 left += 1
             elif char == ')':
-                # If we don't have a matching left, then this is a misplaced right, record it.
                 right = right + 1 if left == 0 else right
-
-                # Decrement count of left parentheses because we have found a right
-                # which CAN be a matching one for a left.
                 left = left - 1 if left > 0 else left
 
-        result = {}
+        result = {} //这是用字典，为了去重，但是用set也可以
+
         def recurse(s, index, left_count, right_count, left_rem, right_rem, expr):
-            # If we reached the end of the string, just check if the resulting expression is
-            # valid or not and also if we have removed the total number of left and right
-            # parentheses that we should have removed.
             if index == len(s):
                 if left_rem == 0 and right_rem == 0:
                     ans = "".join(expr)
-                    result[ans] = 1
+                    result[ans] = 1            //每个answer 都变成1，因为不在乎次数，递归过程可能有一样的answer
             else:
-
-                # The discard case. Note that here we have our pruning condition.
-                # We don't recurse if the remaining count for that parenthesis is == 0.
-                if (s[index] == '(' and left_rem > 0) or (s[index] == ')' and right_rem > 0):
+                // 当前字符是个可以考虑去掉的字符，没加到结果上去
+                if (s[index] == '(' and left_rem > 0) or (s[index] == ')' and right_rem > 0):     
                     recurse(s, index + 1,
                             left_count,
                             right_count,
                             left_rem - (s[index] == '('),
                             right_rem - (s[index] == ')'), expr)
-
+                //把当前字符加上
                 expr.append(s[index])    
-
-                # Simply recurse one step further if the current character is not a parenthesis.
+                //不是括号的话，必须保留，一定加上去，上一句加进去，下一句往下走
                 if s[index] != '(' and s[index] != ')':
                     recurse(s, index + 1,
                             left_count,
                             right_count,
                             left_rem,
                             right_rem, expr)
+                //这是要当前字符，并且是左括号
                 elif s[index] == '(':
-                    # Consider an opening bracket.
                     recurse(s, index + 1,
                             left_count + 1,
                             right_count,
                             left_rem,
                             right_rem, expr)
+                //当前是右括号，并且左括号大于右括号，否则不能加
                 elif s[index] == ')' and left_count > right_count:
-                    # Consider a closing bracket.
                     recurse(s, index + 1,
                             left_count,
                             right_count + 1,
                             left_rem,
                             right_rem, expr)
 
-                # Pop for backtracking.
+                # Pop for backtracking. 把最后字符 pop 出来，有可能是上一层试探加进来的，所以必须退出
                 expr.pop()                 
 
-        # Now, the left and right variables tell us the number of misplaced left and
-        # right parentheses and that greatly helps pruning the recursion.
         recurse(s, 0, 0, 0, left, right, [])     
         return list(result.keys())
