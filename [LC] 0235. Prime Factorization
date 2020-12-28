@@ -1,0 +1,30 @@
+Prime factorize a given integer.
+
+Example
+Example 1:
+
+Input: 10
+Output: [2, 5]
+Example 2:
+
+Input: 660
+Output: [2, 2, 3, 5, 11]
+Notice
+You should sort the factors in ascending order.
+
+class Solution:
+    """
+    @param num: An integer
+    @return: an integer array
+    """
+    def primeFactorization(self, num):
+        # write your code here
+        up = int(num**0.5 + 1)
+        ans = []
+        for i in range(2, up):
+            while num % i == 0:
+                ans.append(i)
+                num /= i
+        if num != 1:
+            ans.append(num)
+        return ans
