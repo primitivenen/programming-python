@@ -1,0 +1,69 @@
+Given a n * m matrix carrot , carrot[i][j] denote the number of carrots at (i, j) coordinates.
+Starting from the center of the matrix, moving in the direction of the largest number of carrots in the four directions, guarantee that the direction of movement is unique.
+Returns the number of carrot you can get.
+
+Example
+Example 1:
+Input:
+carrot = 
+[[5, 7, 6, 3],
+[2,  4, 8, 12],
+[3, 5, 10, 7],
+[4, 16, 4, 17]]
+Output: 83
+Explanation: start point is (1, 1), moving route is 4 -> 8 -> 12 -> 7 -> 17 -> 4 -> 16 -> 5 -> 10
+Example 2:
+Input:
+carrot = 
+[[5, 3, 7, 1, 7],
+ [4, 6, 5, 2, 8],
+ [2, 1, 1, 4, 6]]
+ Output: 30
+ Explanation: start point is (1, 2), moving route is: 5 -> 7 -> 3 -> 6 -> 4 -> 5
+Notice
+n and m within the range is: [1, 300]
+carrot[i][j] within the range is: [1, 20000]
+The start point is rounded down, such as n = 4, m = 4, so the start point is (1, 1)
+If there are no carrots around, stop moving.
+
+class Solution:
+    """
+    @param carrot: an integer matrix
+    @return: Return the number of steps that can be moved.
+    """
+    DIRECTIONS = [(0, -1), (0, 1), (1, 0), (-1, 0)]
+    
+    def PickCarrots(self, carrot):
+        n, m = len(carrot), len(carrot[0])
+        x, y = (n+1)//2 - 1, (m+1)//2 - 1
+        
+        visited = set()
+        ans = 0
+        while True:
+            move_max = -1
+            next_x, next_y = -1, -1
+            ans += carrot[x][y]
+            visited.add((x, y))
+            
+            for dx, dy in DIRECTIONS:
+                temp_x, temp_y = x + dx, y + dy
+                if not self.is_valid(temp_x, temp_y, carrot, visited)
+                    continue
+                if carrot[temp_x][temp_y] > move_max:
+                    move_max = carrot[temp_x][temp_y]
+                    next_x, next_y = temp_x, temp_y
+                    
+            if move_max == -1:
+                break
+            
+            x, y = next_x, next_y
+        return ans
+        
+    def is_valid(self, x, y, carrot, visited):
+        if x < 0 or x >= len(carrot) or y < 0 or y >= len(carrot[0]):
+            return False
+            
+        if (x, y) in visited:
+            return False
+            
+        return True
