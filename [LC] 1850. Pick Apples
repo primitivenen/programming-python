@@ -74,3 +74,60 @@ class Solution:
         if l == 0:
             return prefix_sum[r]
         return prefix_sum[r] - prefix_sum[l-1]
+
+class Solution:
+    def PickApples(self, A, K, L):
+        n = len(A)
+        max_apples = float("-inf")
+        for i in range(n):
+            left_max_l = self.find_max(A, L, 0, i)
+            right_max_k = self.find_max(A, K, i, n)
+            left_max_k = self.find_max(A, K, 0, i)
+            right_max_l =self.find_max(A, L, i, n)
+            
+            if left_max_l != -1 and right_max_k != -1:
+                max_apples = max(max_apples, left_max_l + right_max_k)
+               
+            if left_max_k != -1 and right_max_l != -1:
+                max_apples = max(max_apples, left_max_k + right_max_l)
+                
+        if max_apples == float("-inf"):
+            return -1
+        return max_apples
+        
+   def find_max(self, A, k, start, end):
+        if k > end_start:
+            return -1
+        apples, max_apples = 0, 0
+        for i in range(start, start + k):
+            apples += A[i]
+        max_apples = apples
+        
+        left, right = start, start + k
+        while right < end:
+            apples += A[right]
+            apples -= A[left]
+            max_apples = max(max_apples, apples)
+            left += 1
+            right -= 1
+         return max_apples
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
