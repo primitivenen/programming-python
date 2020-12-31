@@ -24,35 +24,44 @@ Constraints:
 words[i] consists of only lowercase English letters.
 
 class Solution:
+    # find the relatioship between letters using pairs of strings
+    # (we only need to consider consecutive pairs)
+    
     from collections import defaultdict, Counter, deque
     
     def alienOrder(self, words: List[str]) -> str:
+        # the letter-letter relationship is represented using an adjacent matrix
         adj_list = defaultdict(set)
+        
+        # also compute the indegree of letters (i.e., how many letters ranked in front)
         in_degree = Counter({c : 0 for word in words for c in word})
         
         for first_word, second_word in zip(words, words[1:]):
             for c, d in zip(first_word, second_word):
-                if c != d:
+                if c != d: # here is letter-letter relationship
                     if d not in adj_list[c]:
                         adj_list[c].add(d)
                         in_degree[d] += 1
                     break
-            else:
+            else: # special case
                 if len(second_word) < len(first_word):
                     return ""
                 
         output = []
+        
+        # then, extracting all letters with 0 indegree, and append them to the output
         queue = deque([c for c in in_degree if in_degree[c] == 0])
-        while queue:
+        while queue: # do this iteratively until there is no 0 indegree letters
             c = queue.popleft()
             output.append(c)
             for d in adj_list[c]:
+                # meanwhile, decrease the indegree of other letters associated with these 0 indegree ones
                 in_degree[d] -= 1
                 if in_degree[d] == 0:
                     queue.append(d)
-        
+                    
+        # if there is any letter remaining, return error
         if len(output) < len(in_degree):
             return ""
         
         return "".join(output)
-        
