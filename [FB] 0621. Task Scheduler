@@ -45,6 +45,7 @@ class Solution:
     # for all other tasks, we can slip them into the time between two X tasks
     # this way, the idle time can be minimized
     # final time = len(tasks) + idle
+    # time: O(len(tasks)), sort takes at most 26 * log(26) which is O(1); space O(1)
     
     def leastInterval(self, tasks: List[str], n: int) -> int:
         
@@ -65,5 +66,3 @@ class Solution:
         
         return idle + len(tasks)
         
- O(n)
- O(1)
