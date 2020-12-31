@@ -15,6 +15,8 @@ Example 3:
 Input: ")("
 Output: [""]
 
+# 首先计算有几个左括号和右括号需要删除
+
 class Solution:
     def removeInvalidParentheses(self, s):
 
@@ -68,6 +70,75 @@ class Solution:
                             right_rem, expr)
 
                 # Pop for backtracking. 把最后字符 pop 出来，有可能是上一层试探加进来的，所以必须退出
+                expr.pop()                 
+
+        recurse(s, 0, 0, 0, left, right, [])     
+        return list(result.keys())
+
+
+# first compute how many left and right need to be removed
+# and then use DFS + recrusion to enumerate different cases
+
+class Solution:
+    def removeInvalidParentheses(self, s):
+
+        left = 0
+        right = 0
+
+        # first compute how many left and right need to be removed
+        for char in s:
+            if char == '(':
+                left += 1
+            elif char == ')':
+                right = right + 1 if left == 0 else right
+                left = left - 1 if left > 0 else left
+
+        result = {}
+        
+        # left_count and right_count: how many left and right are in the current answer 'expr'
+        # left_rem and right_rem: how many left and right need to be removed
+        def recurse(s, index, left_count, right_count, left_rem, right_rem, expr):
+            
+            # visited all letters and there is no left/right that needs to be removed
+            if index == len(s):
+                if left_rem == 0 and right_rem == 0:
+                    ans = "".join(expr)
+                    result[ans] = 1
+            else:
+                # skip the current parenthese, either '(' or ')'
+                if (s[index] == '(' and left_rem > 0) or (s[index] == ')' and right_rem > 0):
+                    # index + 1: move to the next letter in the recursion
+                    # dynamically decide left_rem or right_rem based on current letter
+                    recurse(s, index + 1,
+                            left_count,
+                            right_count,
+                            left_rem - (s[index] == '('),
+                            right_rem - (s[index] == ')'), expr) #expr no change
+                
+                # another branch, keep the current letter, no matter what it is
+                expr.append(s[index])    
+
+                # if not parenthese, clearly add it
+                if s[index] != '(' and s[index] != ')':
+                    recurse(s, index + 1,
+                            left_count,
+                            right_count,
+                            left_rem,
+                            right_rem, expr)
+                elif s[index] == '(': # if '(', left_count should increase
+                    recurse(s, index + 1,
+                            left_count + 1,
+                            right_count,
+                            left_rem,
+                            right_rem, expr)
+                elif s[index] == ')' and left_count > right_count: # if ')', we need check if we can add it, or prune this branch
+                    recurse(s, index + 1,
+                            left_count,
+                            right_count + 1,
+                            left_rem,
+                            right_rem, expr)
+
+                # Pop for backtracking, and recover to the previous status
                 expr.pop()                 
 
         recurse(s, 0, 0, 0, left, right, [])     
