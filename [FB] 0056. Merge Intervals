@@ -16,6 +16,13 @@ Constraints:
 intervals[i].length == 2
 0 <= starti <= endi <= 104
 
+先按照 start time 排序，然后比较前面区间的 end time 和当前区间的 start time 来合并
+
+# the idea is to sort all intervals first based on their start time
+# and the compare the end time of the previous interval with the start time of the current interval to decide if and how to merge
+
+# O(nlog(n)), space O(1)
+
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         if len(intervals) <= 1:
@@ -29,4 +36,5 @@ class Solution:
                 ans[-1][1] = max(ans[-1][1], intervals[i][1])
         
         return ans
+            
             
