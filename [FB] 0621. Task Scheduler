@@ -35,17 +35,31 @@ Constraints:
 tasks[i] is upper-case English letter.
 The integer n is in the range [0, 100].
 
+在任务中间穿插其他任务
+最大空闲时间只取决于频率最高的任务
+其他任务插入两个频率最高的任务中间
+这样就可以减少空闲时间
+
 class Solution:
+    # the idea is that the maximum idle time only depends on the most frequent task X
+    # for all other tasks, we can slip them into the time between two X tasks
+    # this way, the idle time can be minimized
+    # final time = len(tasks) + idle
+    
     def leastInterval(self, tasks: List[str], n: int) -> int:
+        
+        # Task names are letters
         frequencies = [0] * 26
         for t in tasks:
             frequencies[ord(t) - ord('A')] += 1
-            
+        
+        # find the most frequent task and compute the most possible idle time
         frequencies.sort()
         f_max = frequencies.pop()
         idle = (f_max - 1) * n
         
         while frequencies and idle > 0:
+            # a task with frequency n can reduce as many as n idle time
             idle -= min(f_max - 1, frequencies.pop())
         idle = max(0, idle)
         
