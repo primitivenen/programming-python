@@ -47,6 +47,9 @@ Constraints:
 pickIndex will be called at most 10000 times.
 
 class Solution:
+# using a prefix sum to compute distribution at index i
+# generating a random number
+# using binary search to locate the index of the random number
 
     def __init__(self, w: List[int]):
         self.prefix_sums = []
@@ -54,19 +57,24 @@ class Solution:
         for weight in w:
             ps += weight
             self.prefix_sums.append(ps)
-            
+        
         self.total_sum = ps
 
     def pickIndex(self) -> int:
+        # generate random number, and map it to the range of the sum of all numbers
         target = self.total_sum * random.random()
+        
+        # standard binary search
         low, high = 0, len(self.prefix_sums) - 1
         while low < high:
-            mid = low + (high-low)//2
+            mid = (low + high) // 2
             if self.prefix_sums[mid] < target:
                 low = mid + 1
             else:
                 high = mid
+        
         return low
+
 
 # Your Solution object will be instantiated and called as such:
 # obj = Solution(w)
