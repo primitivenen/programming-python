@@ -1,0 +1,75 @@
+Given a tree consisting of n nodes, n-1 edges. Output the distance between the two nodes with the furthest distance on this tree.
+Given three arrays of size n-1, starts, ends, and lens, indicating that the i-th edge is from starts[i] to ends[i] and the length is lens[i].
+
+Example
+Example 1:
+
+Input：n=5,starts=[0,0,2,2],ends=[1,2,3,4],lens=[1,2,5,6]
+Output：11
+Explanation:
+(3→2→4)the length of this path is `11`,as well as(4→2→3)。
+Example 2:
+
+Input：n=5,starts=[0,0,2,2],ends=[1,2,3,4],lens=[5,2,5,6]
+Output：13
+Explanation:
+(1→0→2→4)the length of this path is`13`,as well as(4→2→0→1)。
+Notice
+Return the farthest distance between any two nodes on the tree, not the depth of the tree. Note that the given edges are undirected edge.
+It is guaranteed that the given edges are able to constitute a tree.
+
+class Solution:
+    """
+    @param n: The number of nodes
+    @param starts: One point of the edge
+    @param ends: Another point of the edge
+    @param lens: The length of the edge
+    @return: Return the length of longest path on the tree.
+    """
+    def longestPath(self, n, starts, ends, lens):
+        # Write your code here
+        neighbors = {}
+        for i in range(n-1):
+            start = starts[i]
+            end = ends[i]
+            dist = lens[i]
+            
+            if start not in neighbors:
+                neighbors[start] = []
+            if end not in neighbors:
+                neighbors[end] = []
+                
+            neighbors[start].append((end, dist))
+            neighbors[end].append((start, dist))
+            
+        #root, neighbors
+        #return maximum_chain, maximum_path
+        chain, path = self.dfs(0, -1, neighbors)
+        return path
+        
+    def dfs(self, root, parent, neighbors):
+        longest_chain = 0
+        longest_path = 0
+        
+        child_longest_chain = 0
+        child_second_longest_chain = 0
+        
+        for neighbor, dist in neighbors[root]:
+            if neighbor == parent:
+                continue
+            
+            child_chain, child_path = self.dfs(neighbor, root, neighbors):
+            child_chain += dist
+            
+            longest_path = max(child_path, longest_path)
+            longest_chain = max(child_chain, longest_chain)
+            
+            _, child_second_longest_chain, child_longest_chain = \
+            sorted([child_longest_chain, child_second_longest_chain, longest_chain])
+            
+        longest_path = max(child_longest_chain + child_second_longest_chain, longest_path)
+        
+        return [longest_chain, longest_path]
+        
+        
+
