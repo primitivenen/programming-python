@@ -41,3 +41,6 @@ class Solution:
                     deq.append(node)
                     
         return len(visited) == n
+
+每次查询 isValidTree() --> BFS O(n+m)  n:number of nodes, m:number of edges
+最坏情况：共 m 次查询， O(m*(n+m))
