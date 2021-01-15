@@ -64,3 +64,15 @@ group by project_id
 order by count_num desc
  limit 1
  )
+
+WITH Sub_query AS (
+                  SELECT project_id, COUNT(*) AS cnt 
+                  FROM Project
+                  GROUP BY project_id
+)
+SELECT project_id 
+FROM Sub_query
+WHERE cnt = (
+            SELECT MAX(cnt)
+            FROM Sub_query
+)
