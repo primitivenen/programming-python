@@ -1,0 +1,74 @@
+Description
+Given N buildings in a x-axis，each building is a rectangle and can be represented by a triple (start, end, height)，where start is the start position on x-axis, end is the end position on x-axis and height is the height of the building. Buildings may overlap if you see them from far away，find the outline of them。
+
+An outline can be represented by a triple, (start, end, height), where start is the start position on x-axis of the outline, end is the end position on x-axis and height is the height of the outline.
+
+Example
+Example 1
+
+Input:
+[
+    [1, 3, 3],
+    [2, 4, 4],
+    [5, 6, 1]
+]
+Output:
+[
+    [1, 2, 3],
+    [2, 4, 4],
+    [5, 6, 1]
+]
+Explanation:
+The buildings are look like this in the picture. The yellow part is buildings.
+
+Example 2
+
+Input:
+[
+    [1, 4, 3],
+    [6, 9, 5]
+]
+Output:
+[
+    [1, 4, 3],
+    [6, 9, 5]
+]
+Explanation:
+The buildings are look like this in the picture. The yellow part is buildings.
+
+扫描线+堆版
+## 复杂度分析
+###时间复杂度
+1. 用了 O(n) 时间把所有的大楼的边界都扫了一遍放进了一个 list 里面
+2. 用了 O(nlogn) 把这些边界都排序了一遍
+3. 用了 O(n) 的时间把边界又扫了一遍，但是与此同时，建了一个堆，然后每次从堆里面删除元素用了 O(n)。所有加起来就是 O(n^2) 了。
+不过我们可以用堆的 lazy deletion 来优化，变成 O(nlogn)。因为有重复元素，所有 lazy deletion 里面的 removed set 必须弄成一个 map。
+>> 最终时间复杂度: O(n^2)，不过可以很容易优化成 O(nlogn)。
+
+###空间复杂度
+1. 用来 O(n) 装边界
+2. 堆里面最多也会用到 O(n)
+>> 最终空间复杂度: O(n)
+
+##如何想到这个算法
+1.首先一看到这个题目的难度是超难，我就吓得快放弃了，然后鼓足了勇气开始想的
+2.这个题目里面给出的输入，有个start有个end，就很容易让人想到一些跟区间有关的算法，其中最有名的就是扫描线，那么就拿来试试，果然可以。
+3.跟传统的扫描线不i一样的是，传统扫描线想要知道的东西，要么是最多几个，要么重点是放在边界的 index 上面的，这一题很不一样的放在了 height 上面
+4.然后就会开始想，扫描线扫到了不同的结果以后怎么办呢？
+>>这里就分2个类别去思考，第一是如果找到的是一个 start 怎么办，第二找到 end 怎么办
+>>对于 start，如果后面那个 start 比前面的高，自然是要 end 现在这个，额外弄个新的矩形的，否则可以 ignore
+>>对于 end，如果来了一个比现在的 height 矮的，我们可以 ignore
+>>但是如果和现在的 height 一样，那么就要把 height 变矮了，但是变成啥呢？想了一些发现要变成第二名的那个，于是就想到了 heap
+
+##具体算法
+1. 扫描线第一步自然是把边界加到 list 里面
+2. 第二步排序边界，常规操作不多说
+3. 第三步就是对于每个边界，咱们要处理一下
+4. 根据上面思考的，分为了 start 边界和 end 边界分别处理
+5. start 边界，我们主要看越来越高的边界，矮的可以忽略
+6.  end 边界，我们要看高的，想了一下，不可能比现在还高了，于是最高需要处理的是等于现在高度的，矮的同样可以忽略
+
+
+
+
+
