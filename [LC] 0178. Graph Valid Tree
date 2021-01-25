@@ -12,6 +12,11 @@ Output: false.
 Notice
 You can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.
 
+思路：
+判断是不是一棵树，两个条件
+1.环与便的关系，判断方法：n个点，n-1条边（注意这个是树的一个必要条件，但是这并不能保证满足了这一条，图上就没有环了）
+2.联通。判断是否联通：bfs 或者 union find。看看找到的联通块是否包含所有的点。
+
 class Solution:
     """
     @param n: An integer
