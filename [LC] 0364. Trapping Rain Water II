@@ -1,0 +1,87 @@
+Given n x m non-negative integers representing an elevation map 2d where the area of each cell is 1 x 1, compute how much water it is able to trap after raining.
+
+Example
+Example 1:
+
+Given `5*4` matrix 
+Input:
+[[12,13,0,12],[13,4,13,12],[13,8,10,12],[12,13,12,12],[13,13,13,13]]
+Output:
+14
+Example 2:
+
+Input:
+[[2,2,2,2],[2,2,3,4],[3,3,3,1],[2,3,4,5]]
+Output:
+0
+
+从左右两个墙，到围成一圈的墙
+考虑墙上最矮的位置（最小值），水可能流出去了
+考虑最小值周围的四个值，如果比它小，就可以盛下水，然后纳入墙体
+墙出现两个不连通的洞，不影响
+
+思路：
+用堆存放所有的最外层格子
+每次从队中拿出最低高度的格子（堆顶）
+找到这个格子的四个邻居
+只有邻居比自己低的情况，邻居才能够积水
+计算邻居的积水量，并把邻居放入堆中
+不断执行到堆空，累加的存水量就是答案
+
+class Solution:
+    """
+    @param heights: a matrix of integers
+    @return: an integer
+    """
+    DIRECTIONS = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+    def trapRainWater(self, heights):
+        # write your code here
+        if not heights:
+            return 0
+            
+        import heapq
+        n, m = len(heights), len(heights[0])
+        visited =set([])
+        # python 默认就是小顶堆
+        heap = []
+        
+        #将最外层的所有格子加入堆中
+        # heap 会按照 tuple 的第一个元素排列
+        #所以 tuple 里元素的顺序是 (height, x, y)
+        
+        for i in range(n):
+            heapq.heappush(heap, (heights[i][0], i, 0))
+            heapq.heappush(heap, (heights[i][m - 1], i, m - 1))
+            visited.add((i, 0))
+            visited.add((i, m - 1))
+        for i in range(m):
+            heapq.heappush(heap, (heights[0][i], 0, i))
+            heapq.heappush(heap, (heights[n - 1][i], n - 1, i))
+            visited.add((0, i))
+            visited.add((n - 1, i))
+        water = 0
+        while heap:
+            #找到堆里面最低的高度，可看作木桶的短板
+            shortest = heapq.heappop(heap)
+            #对短板四周的格子计算存水量
+            for direction in self.DIRECTIONS:
+                x = shortest[1] + direction[0]
+                y = shortest[2] + direction[1]
+                #判断坐标是否越界和邻居是否被访问过
+                if not self.is_valid(x, y, visited, n, m):
+                    continue
+                #只有邻居的高度比现在的短板还小，邻居才会积水
+                if shortest[0] > heights[x][y]:
+                    water += max(0, shortest[0] - heights[x][y])
+                #将邻居加入堆中，并将邻居的高度设置为较大者
+                height = max(shortest[0], heights[x][y])
+                heapq.heappush(heap, (height, x, y))
+                visited.add((x, y))
+        return water
+        
+    def is_valid(self, x, y, visited, n, m):
+        if x < 0 or x >= n:
+            return False
+        if y < 0 or y >= m:
+            return False
+        return (x, y) not in visited
