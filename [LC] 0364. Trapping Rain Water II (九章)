@@ -85,3 +85,5 @@ class Solution:
         if y < 0 or y >= m:
             return False
         return (x, y) not in visited
+
+如果水能够斜着流，就必须把方向数组改成8个元素的就可以了。否则，这里的水必须经过邻居才能流
