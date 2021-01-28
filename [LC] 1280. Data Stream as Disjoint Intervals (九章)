@@ -55,7 +55,7 @@ class Solution:
     def __init__(self):
         self.uf = UnionFind()
         
-    def addNum(self, val):
+    def addNum(self, val):                       #O(1)
         self.uf.add(val)
         #和 x-1 合并
         if val - 1 in self.uf.father:
@@ -68,7 +68,7 @@ class Solution:
     def getIntervals(self):
         #存放区间合集
         intervals = []
-        for val in self.uf.father.keys():
+        for val in self.uf.father.keys():          #O(n)
             #只有父亲为空，才是根节点
             if not self.uf.father[val]:
                 intervals.append(self.uf.intervals[val])
@@ -81,7 +81,7 @@ class UnionFind:
         #存放整数对应区间
         self.intervals = {}
         
-    def add(self, x):
+    def add(self, x):         #O(1)
         if x in self.father:     #去重
             return
         
