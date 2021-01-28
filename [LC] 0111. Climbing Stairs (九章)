@@ -1,0 +1,46 @@
+You are climbing a stair case. It takes n steps to reach to the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+Example
+Example 1:
+	Input:  n = 3
+	Output: 3
+	
+	Explanation:
+	1) 1, 1, 1
+	2) 1, 2
+	3) 2, 1
+	total 3.
+
+Example 2:
+	Input:  n = 1
+	Output: 1
+	
+	Explanation:  
+	only 1 way.
+
+状态： dp[i]
+因为我们需要用数组存储子问题的答案，我们都需要开一个数组。这个数组对应的值就是状态。
+如何确定状态？
+  - 最后一步
+  - 子问题
+ 最后一步：
+ -最后一步我们要求什么？ - 走 n 级台阶所有可能的方法数
+ -如何才能推出最后一步的值？
+ -若知道刚好走到n-1级台阶有2种方法，刚好走到n-2级台阶有3种方法，走n级台阶有多少种方法？dp[n] = dp[n-1] + dp[n-2]
+ 
+ 子问题：
+ -要求走n级台阶的方法数
+ -需要走n-1和n-2级的方法数
+ 
+ 初始条件和边界情况
+ -哪些状态是会用到，但是无法从转移方程推出的。
+ 
+ 动态规划：1. 记忆化搜索(优势：不需要考虑求解顺序，劣势：可能stack overflow，因为栈空间永远小于堆空间，不能用滚动数组)，
+          2. 递推（优势：使用 for 循环，不会 stack overflow, 滚动数组，劣势：错误的求解顺序会导致答案错误）
+ 
+ 
+ 
+ 
+ 
