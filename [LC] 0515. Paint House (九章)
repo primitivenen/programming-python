@@ -24,8 +24,9 @@ class Solution:
         # write your code here
 
 #dp[n][3]
-#dp[i][j]：前 i 个房子成功染色，且最后一个房子的颜色为j
-#dp[i][j] = min(dp[i-1)[(other) j]) + cost[i][j]
+#dp[i][j]：前 i 个房子成功染色，且最后一个房子的颜色为j (j=0,1,2代表三种颜色)
+#dp[i][j] = min(dp[i-1)[(other) j]) + cost[i][j] 
+
         n = len(costs)
         
         if n == 0:
@@ -37,7 +38,8 @@ class Solution:
         dp[0][1] = costs[0][1]
         dp[0][2] = costs[0][2]
         
-        #now=1, old=0, i->now, i-1->old
+        #dpi 只和 dpi-1有关，dpi-2已经没有用了
+        #now=1, old=0, i->now, i-1->old 
         for i in range(1, n):
             #old = now, now = 1-now   形成滚动数组的解法，空间复杂度降为O(1)
             dp[i][0] = min(dp[i - 1][1], dp[i - 1][2]) + costs[i][0]   #或者这边所有的 dp[i%2][0] = ...
@@ -45,3 +47,6 @@ class Solution:
             dp[i][2] = min(dp[i - 1][1], dp[i - 1][0]) + costs[i][2]
             
         return min(dp[n - 1][0], min(dp[n - 1][1], dp[n - 1][2])) #n-1->now
+
+二分答案：错，很难判断染哪个颜色
+贪心：错      [100, 1000, 1000],第一个颜色吗？但是后面的房子 [10,100000, 100000] 就傻眼了
