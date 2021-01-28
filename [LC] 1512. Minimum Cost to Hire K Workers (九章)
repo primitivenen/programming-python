@@ -1,0 +1,95 @@
+There are N workers. The i-th worker has a quality[i] and a minimum wage expectation wage[i].
+
+Now we want to hire exactly K workers to form a paid group. When hiring a group of K workers, we must pay them according to the following rules:
+
+Every worker in the paid group should be paid in the ratio of their quality compared to other workers in the paid group.
+Every worker in the paid group must be paid at least their minimum wage expectation.
+Return the least amount of money needed to form a paid group satisfying the above conditions.
+
+Example
+Example 1:
+
+Input: quality = [10,20,5], wage = [70,50,30], K = 2
+Output: 105.00000
+Explanation: We pay 70 to 0-th worker and 35 to 2-th worker.
+Example 2:
+
+Input: quality = [3,1,10,10,1], wage = [4,8,2,2,7], K = 3
+Output: 30.66667
+Explanation: We pay 4 to 0-th worker, 13.33333 to 2-th and 3-th workers seperately. 
+Notice
+1.1 <= K <= N <= 10000, where N = quality.length = wage.length
+2.1 <= quality[i] <= 10000
+3.1 <= wage[i] <= 10000
+4.Answers within 10^-5 of the correct answer will be considered correct.
+
+思路：按照性价比最差的人的工资来结算， 性价比 wage/quality   例子：quality=[50,75,200], wage=[20, 60,90] 性价比=[0.4, 0.8, 0.45]  第一个人最好，中间的最差
+队伍的总报酬取决于：    （期望工资/工作质量）最高的人
+单位工作产出要钱最多的人，作为整个队伍的工资奠定人
+定义 unit_wage = max(wagei/qualityi)             
+公式 sigma(unit_wage * qualityi)  工资总和，以及性价比最差的人的单位工资
+
+想法一：按性价比排序
+我们肯定希望 unit_wage 越少越好，所以会想到按性价比排序，选 K 个人
+这种方法有没有问题？想法没错，但是这道题是不可取的，因为这道题中总工作量不是给定的，而是每个人的产出不一样
+极端例子： quality=[100,1], wages[10,1]，选1个人
+第一个性价比高，但是干太多了，最后的总报酬也多
+核心原因：干活太卖力，产出很多也需要付出更多报酬
+
+想法二： C(n, k)找所有组合
+求出 n 个数里挑出 k 个数的所有组合，计算耗费， dfs
+时间复杂度 O(C(n, k)*lk)太慢了
+O(C(n,k)) 是O(2^n)级别的    C(n, n/2) = n!/((n/2)!(n/2)!) 大概都是一倍
+
+想法三： for 循环最大的 unit_wage
+尝试所有 K 个人组合的可能性，然后计算总报酬全局求最小 => 思路转换 => 尝试所有最大 unit_wage 的可能性，去看怎样挑选 K 个人能够使得总报酬最小
+
+和两个因子有关， 比如：坐标 (x,y), 区间
+
+sigma quality 是一个组合，不是一个数，所以 unit_wage (单位产出工资) 比较好循环
+
+思路整理：
+将所有工人按照 unit_wage 从小到大排序
+for 循环某个工人 i 作为 unit_wage 最大的工资奠基人
+剩下来的任务，是需要在他和他前面的人里选 K 个人
+使得这 unit_wage*Sigma{这K个人的 quality} 最小
+即在他和他前面挑选出 K 个 quality 之和最小的人
+
+在一堆数中挑选最小的 K 个数？
+Top k smallest numbers
+做法：维护一个大小为 K 的最大堆
+如果堆元素超过 k，则 pop 掉最大值
+lintcode problem: top k largest number
+
+class Solution:
+    """
+    @param quality: an array
+    @param wage: an array
+    @param K: an integer
+    @return: the least amount of money needed to form a paid group
+    """
+    def mincostToHireWorkers(self, quality, wage, K):
+        # Write your code here
+        import heapq
+        n = len(quality)
+        
+        #排序：越小的单位薪资越前，如果单位薪资相同，则更小的工作质量在前, O(nlogn)
+        workers = sorted([float(w / q), q] for w, q in zip(wage, quality))  #同步 for 循环
+        
+        min_cost = float('inf')
+        team_quality = 0
+        heap = []
+        for unit_wage, quality in workers: #O(n)
+            #移除堆顶
+            if len(heap) == K:
+                team_quality -= -heapq.heappop(heap)  #加负数进去，从大到小
+            #统计队伍的总质量
+            team_quality += quality
+            #使用相反数将小顶堆变成大顶堆        #O(logK)
+            heapq.heappush(heap, -quality)
+            #到第k个人的时候开始计算结果
+            if len(heap) == K:
+                min_cost = min(min_cost, team_quality * unit_wage)
+        
+        return min_cost
+        
