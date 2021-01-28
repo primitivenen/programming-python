@@ -1,0 +1,55 @@
+Given a non-empty array containing only positive integers, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+
+Example
+Example 1:
+
+Input: nums = [1, 5, 11, 5], 
+Output: true
+Explanation:
+two subsets: [1, 5, 5], [11]
+Example 2:
+
+Input: nums = [1, 2, 3, 9], 
+Output: false
+Notice
+Each of the array element will not exceed 100.
+The array size will not exceed 200.
+
+找到所有子集，看子集的和是否与 sum/2 相等，
+时间复杂度：加入 nums.length = n, 时间复杂度就是子集个数，每个数有取和不取两种可能，O(2^n)
+
+第一反应：若所有数字之和为奇数，肯定false
+
+题意转化：假设所有数字之和为偶数，那只需要找到一个 subsequence，和为 sum/2 就行了。
+
+思考类似问题：背包问题， 从n个元素里面挑选任意个物品，让和为sum/2
+
+
+class Solution:
+    """
+    @param nums: a non-empty array only positive integers
+    @return: true if can partition or false
+    """
+    def canPartition(self, nums):
+        # write your code here
+        summ = sum(nums)
+        
+        if summ % 2 != 0:
+            return False
+            
+        n = len(nums)
+        summ /= 2
+        dp = [[True for _ in range(summ + 1)] for _ in range(n+1)]
+        
+        dp[0][0] = True
+        
+        for i in range(n):
+            if i == 0:
+                if nums[i] <= summ:
+                    dp[i][nums[i]] = True
+                continue
+            
+            for j in range(summ + 1):
+                dp[i][j] = dp[i - 1][j] | (j >= nums[i] & dp[i - 1][j - nums[i]])
+        
+        return dp[n - 1][summ]
