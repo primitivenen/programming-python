@@ -105,3 +105,4 @@ class UnionFind:
             )
             self.intervals[root_y] = [left, right]
  
+O(n) + O(klogk)
