@@ -1,0 +1,77 @@
+You have an exam, which lasts 120 minutes. There are multiple questions on the exam, and your answer order is not limited. There are three different strategies you can choose from for the question i:
+
+Skip this question and get 0 points for no time.
+Just do part of the problem. You would spend p[i] minutes and get part[i] points.
+Do the whole problem. You would spend f[i] minutes and get full[i] points.
+Given four arrays in turn: p, part, f, full, calculate the maximum number of points you can get.
+
+Example
+Sample 1:
+Input sample: p=[20,50,100,5], part=[20,30,60,3], f=[100,80,110,10], full=[60,55,88,6]
+Output sample: 94
+Sample explanation: Of all the choices, choosing to complete the whole question 3 and the whole question 4 has the highest score. The whole of question 3 took 110 minutes to get 88 points, and the whole of question 4 took 10 minutes to get 6 points, so it took 120 minutes to get 94 points altogether.
+
+Sample 2:
+Input sample: p=[60,60], part=[30,30], f=[100,120], full=[40,60]
+Output sample: 60
+Sample explanation: You can choose doing part of the problem 1 and 2 or doing the whole of question 2. Either way you can get a maximum of 60 points in 120 minutes .
+
+Clarification
+We will run your code for 20times,. please ensure that you don't change the param in your function.
+
+Notice
+The number of examination questions is no more than 200 and at least 1.
+Time spent on each question: 1 ≤ p[i] ≤ f[i] ≤ 120
+Score of each question: 1 ≤ part[i] ≤ full[i] ≤ 100
+
+背包型动态规划属于前缀型动态规划
+
+思路：
+背包：有总容量，有耗费，在容量限制的情况下，选择一些对应的东西，然后得到的分数尽可能的高
+
+状态数组：一维花的时间，一维是前i个物品（题目）花多少时间做，做出来的最多分数是多少
+
+dp[i][j]选做前i道题，在考试前j分钟时能得到的最高分数
+
+答案： dp[n][MAX_TIME]
+
+以前每题01动态规则，每道题有取和不取两种情况。01背包要么做，要么不做。
+
+这题目有三种选择，要么做，要么不做，要么做一半。
+
+转移方程：
+做一部分（满足 p_time[i-1]<=j): part=dp[i-1][j-p_time[i-1]] + p_score[i-1]
+全做完 （满足 f_time[i-1]<=j):  full=dp[i-1][j-f_time[i-1]] + f_score[i-1]
+dp[i][j] = max(part,full,dp[i-1][j])
+
+dp[0][0] = 0  一开始什么题都没做，得到0分
+dp[0][1] 前0道题花1分钟
+      2          2
+      。。。 也是得到0分，不管你花多少分钟，发呆嘛，也是0分。
+  
+dp[i][0]  不一定，万一有道题，p_time是0，否则p_time全大于0，那么也是0分
+
+时间复杂度和空间复杂度: O(n*m)
+
+需要对时间、分数排序吗？不需要，这是背包问题，有总量控制，物品的相对顺序不重要
+
+def exam(self, p, part, f, full):
+    # write your code here
+    n = len(part)
+    dp = [[0]*122 for _ in range(n+2)]
+    for i in range(1, n+1):
+        for j in range(121):
+            #考虑将 i 这道题只做一部分
+            dp[i][j] = dp[i-1][j]
+            if j < p[i - 1]:
+                continue
+            dp[i][j] = max(dp[i][j],
+                           dp[i - 1][j - p[i - 1]] + part[i - 1])
+            if j < f[i - 1]:
+                continue
+            dp[i][j] = max(dp[i][j],
+                           dp[i - 1][j - f[i - 1]] + full[i - 1])
+    return dp[n][120]
+                
+
+
