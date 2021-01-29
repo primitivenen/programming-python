@@ -51,7 +51,7 @@ dp[0][1] 前0道题花1分钟
   
 dp[i][0]  不一定，万一有道题，p_time是0，否则p_time全大于0，那么也是0分
 
-时间复杂度和空间复杂度: O(n*m)
+时间复杂度和空间复杂度: O(n*m)  题目数量为n，时间总长为m
 
 需要对时间、分数排序吗？不需要，这是背包问题，有总量控制，物品的相对顺序不重要
 
@@ -60,7 +60,7 @@ def exam(self, p, part, f, full):
     n = len(part)
     dp = [[0]*122 for _ in range(n+2)]  #全是+1， 范围：0~n
     for i in range(1, n+1):
-        for j in range(121):
+        for j in range(121):     #j从1开始也可以，但是要考虑不要出现负数
             #考虑将 i 这道题只做一部分
             dp[i][j] = dp[i-1][j]   #可以选择不做这道题，从数组取数的时候 i-1
             if j < p[i - 1]: #不够part time的时间，因为part_time不够，full time也会不够
@@ -74,5 +74,34 @@ def exam(self, p, part, f, full):
     # 返回整个考试时间120分钟得到的最高分数
     return dp[n][120]
                 
+                
+  
+时间不能优化，空间能优化，背包问题可以滚动数组
+
+每个地方模2就可以实现空间优化
+
+    def exam(self, p, part, f, full):
+        # write your code here
+        n = len(part)
+        dp = [[0]*122 for _ in range(n+2)]
+        for i in range(1, n+1):
+            for j in range(121):
+                #考虑将 i 这道题只做一部分
+                dp[i%2][j] = dp[(i-1)%2][j]
+                if j < p[i - 1]:
+                    continue
+                dp[i%2][j] = max(dp[i%2][j],
+                               dp[(i - 1)%2][j - p[i - 1]] + part[i - 1])
+                if j < f[i - 1]:
+                    continue
+                dp[i%2][j] = max(dp[i%2][j],
+                               dp[(i - 1)%2][j - f[i - 1]] + full[i - 1])
+        return dp[n%2][120]
+
+如果 i 依赖于 i-1，模2.
+如果 i 依赖于 i-1 和 i-2，模3.
+如果 i 依赖于 i-1, i-2, i-3, 模4.
+如果 i 依赖于 0~i-1, 就滚不动了，滚动数组必须是有限的数
+模n 虽然可以，但是和不摸没区别
 
 
