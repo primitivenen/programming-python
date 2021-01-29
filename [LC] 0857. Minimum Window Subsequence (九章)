@@ -1,0 +1,137 @@
+Given strings S and T, find the minimum (contiguous) substring W of S, so that T is a subsequence of W.
+
+If there is no such window in S that covers all characters in T, return the empty string "". If there are multiple such minimum-length windows, return the one with the smallest starting index.
+
+Example
+Example 1:
+
+Input：S="jmeqksfrsdcmsiwvaovztaqenprpvnbstl"，T="u"
+Output：""
+Explanation： unable to match
+Example 2:
+
+Input：S = "abcdebdde"， T = "bde"
+Output："bcde"
+Explanation："bcde" is the answer and "deb" is not a smaller window because the elements of T in the window must occur in order.
+Notice
+All the strings in the input will only contain lowercase letters.
+The length of S will be in the range [1, 20000].
+The length of T will be in the range [1, 100].
+
+最小的窗口子序列
+
+子串：连续的字符            n的字符串，子串多少个？n^2       abc,cba.. 像这种排列才是阶乘级别的，
+                        abcd 长度1的子串 4个
+                                 2      3
+                                 3      2
+                                 4      1          1+2+..+n=n(n+1)/2 =》n^2级别的
+子序列是不连续的
+
+判断一个字符串中有没有另一个子串作为子序列呢？ 类似双指针  bcde 有没有 bde？首先b，然后找b后面的d，然后找d 后面的e, 这样需要多长时间？找尽量靠左的答案，
+                                   找到b后是接着b往后找  =》典型的同向双指针，不回头的 =》时间复杂度: O(n+m)        n*m =》指针回头
+                                  
+                                  O(n^2 * (n+m))  ==> O(n*(n+m)) => O(n^2)
+
+LCS（挑两个相等的子序列）, edit distance 匹配型动态规则
+
+状态
+令 dp[i][j] 表示成功匹配 T 串的前j个字符为 S 中前 i 个字符的子序列时的匹配起点
+转移方程
+S[i] == T[j] && j==1: dp[i][j] = i     j=1 第二个字符串只剩一个字符，dp[i][j]直接匹配上这个字符，相当于初始化
+S[i] == T[j] && j!=1:dp[i][j] = dp[i-1][j-1]
+S[i] !=T[j]: dp[i][j] = dp[i-1][j]
+（可以把上面部分当作初始化）
+
+这道题是第一个字符串挑子串，第二个字符串挑子序列
+
+初始化 dp[i][0] = -1 
+表示空串和 S 串的前 i 个字符匹配的起点为 -1 (-1比0好，从下标来说 0 代表实际字符，任何一个字符串都可以匹配空串)
+
+答案： dp[i][len(T)]     第一个字符串的前i个位置中就可以找到第二个字符串前 m=len(T) 个字符，记录的是尽可能靠后的匹配的地址
+abdabcd, abd =>  dp[7][3] = 4     abcd 有4个字符， 7-4+1=4
+                 dp[3][3] = 1           3-1+1=3 这个方案更优
+dp 结束后遍历 dp[][len(T)]，若 dp[i][len(T)] != -1, 则此处存在窗口起点 dp[i][len(T)]，窗口长度为 i-dp[i][len(T)] + 1，
+此时维护最小窗口长单独 len 和窗口起点 start，答案为 S.substring(start, start+len)
+
+abdabcdabd           dp[10][3],dp[7][3],dp[3][3] 返回最短，并且首字母最靠前的位置
+时间复杂度：O(n*m)
+空间复杂度：O(n*m)
+
+class Solution:
+    """
+    @param S: a string
+    @param T: a string
+    @return: the minimum substring of S
+    """
+    def minWindow(self, S, T):
+        # Write your code here
+        n, m = len(S), len(T)
+        dp = [[0]*(m+1) for _ in range(n+1)]
+        for i in range(1, n+1):
+            for j in range(1, m+1):
+                if S[i-1] == T[j-1]:
+                    if j==1:
+                        dp[i][j] = i   #匹配上首字母是i
+                    else:
+                        dp[i][j] = dp[i-1][j-1] #让最后两个字符直接匹配上
+                else:
+                    dp[i][j] = dp[i-1][j]
+        
+        start = 0
+        length = n + 1
+        for i in range(1, n+1): #for 循环每个起始位置
+            if dp[i][m]!=0: #找到一个匹配
+                if i-dp[i][m] + 1 < length:
+                    start = dp[i][m] - 1
+                    length = i - dp[i][m] + 1
+                    
+        if length == n + 1:#如果找不到
+            return ""
+   
+   这里可以用滚动数组优化空间吗？可以
+   
+   class Solution:
+    """
+    @param S: a string
+    @param T: a string
+    @return: the minimum substring of S
+    """
+    def minWindow(self, S, T):
+        # Write your code here
+        n, m = len(S), len(T)
+        dp = [[0]*(m+1) for _ in range(n+1)]
+        
+        start = 0
+        length = n + 1
+        
+        for i in range(1, n+1):
+            for j in range(1, m+1):
+                if S[i-1] == T[j-1]:
+                    if j==1:
+                        dp[i][j] = i   #匹配上首字母是i
+                    else:
+                        dp[i][j] = dp[i-1][j-1] #让最后两个字符直接匹配上
+                else:
+                    dp[i][j] = dp[i-1][j]
+            if dp[i][m]!=0: #找到一个匹配
+                if i-dp[i][m] + 1 < length:
+                    start = dp[i][m] - 1
+                    length = i - dp[i][m] + 1
+                    
+        if length == n + 1:#如果找不到
+            return ""
+        
+        return S[start:start+length]
+        
+        
+        
+        return S[start:start+length]
+        
+        时间复杂度：O(n*m)
+        空间复杂度：O(m)
+        
+        大部分匹配型动态规划和大部分背包型动态规划都可以滚动数组
+
+
+
+
