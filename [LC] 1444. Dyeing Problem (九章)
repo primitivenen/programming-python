@@ -1,0 +1,65 @@
+There is a circle, divided into n sectors. All the sectors are colored with some of m colors. The colors of adjacent sectors cannot be the same. Find the total number of plans.
+
+Example
+Example 1:
+
+Input:n = 2,m = 3
+Output:6
+Explanation:One circle is divided into two sectors. There are six kinds of schemes for coloring in three colors: black, red, black and white, white and red, white and black, red and white, and red and black.
+Example 2:
+
+Input:n = 3,m = 2
+Output:0
+Explanation:A circle is divided into 3 sectors and colored with 2 colors. No matter how it is colored, there is no guarantee that the adjacent colors are different.          
+Notice
+Do not consider symmetry.
+Since this number may be large, you only need to return the solution number mod 1e9 + 7.
+
+这个题是环，不是线性的，如果是线性就很容易。
+
+分成几份？   染色方法？
+n = 1       1
+    2       m*(m-1)
+    
+动态规划四要素：
+初始化：
+i=1时，最少需要1种颜色，A(m,1): dp[1] = m
+i%2 == 0 时，最少需要2种颜色，A(m,2): dp[2] = m*(m-1)
+i%2 == 1 && i>=3时，最少需要3种颜色，A(m,3):dp[3] = m*(m-1)*(m-2)
+
+转移方程：
+n个扇子的问题，可以转换为n-1个扇形和n-2个扇形的子问题：
+
+对于n-1个扇形的子问题来说，它的配色方案共有dp[n-1]种。因为任意两个相邻扇形的颜色不同，我们在这两个扇形中间插入一个新扇形的配色方案就是m-2种，
+此时总共的配色方案共有 dp[n-1]*(m-2)种。
+    转移方程一：dp[i] += dp[n-1] * (m-2)
+
+如果第一个和倒数第二个颜色一致时，把那两块拼在一起，就得到 dp[n-2]*(m-1)
+对于n-2个扇形的子问题来说，它的配色方案共有 dp[n-2] 种。此时将其中一个扇形拆开，得到两个同色扇形，然后在这两个同色扇形中插入一个新的扇形。
+对于这个新扇形来说，它左右的两个扇形是同色的，所以新扇形有m-1种配色方案。此时我们得到的配色方案共有 dp[n-2]]*(m-1)。
+    转移方程二：dp[n] += dp[n-2] *(m-1)
+    
+动态规划的答案：
+在 dp 的递推过程中应加入取模运算防止溢出，最后的 dp[n] 即为结果。
+
+def getCount(self, n, m):
+    MOD = 1000000007
+    # 令dp[i]表示i个扇形m种配色的上色方案数
+    dp = [0] * (n+3)
+    # 1个扇形有m种方案
+    dp[1] = m % MOD
+    dp[2] = m * (m - 1) % MOD
+    dp[3] = m * (m - 1) * (m - 2) % MOD
+    for i in range(4, n + 1):
+        dp[i] += dp[i - 1] * (m - 2) #倒数第二个和正数第一个颜色不同
+        #dp[i] %= MOD  #可以一边加一边取模，防止溢出
+        dp[i] += dp[i - 2] * (m - 1) #倒数第二个和正数第一个颜色相同， 切开，重合可以合起来
+        dp[i] %= MOD
+
+    return dp[n]
+    
+  设扇形个数为n
+  时间复杂度  O(n)
+  空间复杂度  O(n)
+
+因为依赖于 i-1 和 i-2，所以可以模3，滚动数组
