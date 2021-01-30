@@ -1,0 +1,132 @@
+You are given coins of different denominations and a total amount of money. Write a function to compute the number of combinations that make up that amount. 
+You may assume that you have infinite number of each kind of coin.
+
+Example
+Example1
+
+Input: amount = 10 and coins = [10] 
+Output: 1
+Example2
+
+Input: amount = 8 and coins = [2, 3, 8]
+Output: 3
+Explanation:
+there are three ways to make up the amount:
+8 = 8
+8 = 3 + 3 + 2
+8 = 2 + 2 + 2 + 2
+Notice
+You can assume below:
+
+0 <= amount <= 5000
+1 <= coin <= 5000
+the number of coins is less than 500
+the answer is guaranteed to fit into signed 32-bit integer
+
+背包问题有3种：
+完全背包  （无限背包，一个物品随便用，多少个都可以）  《==  这道题
+01背包 （一个物品有取和不取）
+多重背包  （每个物品有一定个数）
+
+动态规划四要素：
+
+状态： dp[i][j] 表示使用前 i 种硬币时，放入容量为 j 的背包种，能凑成多少种可能
+
+转移方程：dp[i][j] += dp[i-1][j-k*coins[i-1]]   
+k代表我们使用了多少个同种硬币, k=0,1,2,... 第i个硬币用了多少个
+在dp循环种需要我们手动枚举 k 的数量
+
+最后一个硬币8
+dp[3][8]=dp[2][8-1*8] + dp[2][8-0*8]
+
+换个顺序，8是第一个硬币
+[8,3,2]  dp[3][8]=dp[2][8-0*2]  一枚2的都不用
+                + dp[2][8-1*2] 用了1个2，前面需要凑出8-1*2=6，就是前面的8和3需要凑出6
+                + dp[2][8-2*2] 
+                + dp[2][8-3*2]
+                + dp[2][8-4*2]
+
+初始化：
+对于任何 j%coins[0] == 0, dp[1][j] = 1       也可以用 dp[0][0]=1 前0个硬币凑出0个方案，老师觉得这是更好的初始化
+此时表示我们只使用第一种面值为 coins[0] 的硬币，
+凑成金额为[0, coins[0], 2*coins[0]...] 的可能方案数量均是 1 种。
+
+答案：
+dp[n][amount]
+代表使用前 n 种硬币，并且填满容量为 amount 的背包所构成的方案数
+
+    def change(self, amount, coins):
+        # write your code here
+        if coins == None or len(coins) == 0:
+            return 0
+        if amount == 0:
+            return 1
+        
+        n = len(coins)
+        dp = [[0] * (amount + 1) for _ in range(n+1)]
+        
+        for j in range(0, amount + 1, coins[0]):
+            dp[1][j] = 1
+            
+        for i in range(2, n+1):
+            for j in range(amount+1):
+                for k in range(j/coins[i-1] + 1):
+                    dp[i][j] += dp[i-1][j-k*coins[i-1]]
+        
+        return dp[n][amount]
+        
+        设 amount = m，有n种硬币，
+        时间复杂度：O(n*(m^2))
+        空间复杂度：O(n*m)
+        
+        两者都可以优化，空间肯定可以优化（背包问题都可以滚动数组）
+        
+        优化状态转移方程
+        根据O(n*(m^2))的算法，我们可以推导出：
+        dp[i][j] = dp[i-1][j-0*coins[i-1]]
+                  +dp[i-1][j-1*coins[i-1]]
+                  +dp[i-1][j-2*coins[i-1]]
+                  +...
+                  +dp[i-1][j-k*coins[i-1]]
+        少拿一个当前硬币 coins[i-1]后又可以得到：
+        dp[i][j-coins[i-1]]=dp[i-1][j-coins[i-1]-0*coins[i-1]]
+                           +dp[i-1][j-coins[i-1]-1*coins[i-1]]
+                           +...
+                           +dp[i-1][j-coins[i-1]-(k-1)*coins[i-1]]
+         所以：
+         dp[i][j] = dp[i-1][j-0*coins[i-1]]     代表不选第i个硬币 coin[i-1]
+                   + dp[i][j-coins[i-1]]        代表第i个硬币 coin[i-1] 至少选1个
+         
+         另外一题，7 =1+3+3/2+5 也是分为第1个数是1和第1个数大于1两种情况
+         
+         wild card matching 通配符匹配 * 可以匹配 0,1...个字符，分为两类，匹配0个和大于0个
+         
+    def change(self, amount, coins):
+        # write your code here
+        if coins == None or len(coins) == 0:
+            return 0
+        if amount == 0:
+            return 1
+        
+        n = len(coins)
+        dp = [[0] * (amount + 1) for _ in range(n+1)]
+        
+        for j in range(0, amount + 1, coins[0]):
+            dp[1][j] = 1
+            
+        for i in range(2, n+1):
+            for j in range(amount+1):
+                dp[i%2][j] = dp[(i-1)%2][j]
+                if j-coins[i-1] >= 0:
+                    dp[i%2][j] += dp[i%2][j-coins[i-1]]
+        
+        return dp[n%2][amount]
+        
+        设amount=m，有n种硬币
+        时间复杂度：O(n*m)
+        空间复杂度：O(m)
+        
+        
+         
+
+
