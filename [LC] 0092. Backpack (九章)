@@ -1,0 +1,42 @@
+Given n items with size Ai, an integer m denotes the size of a backpack. How full you can fill this backpack?
+
+Example
+Example 1:
+	Input:  [3,4,8,5], backpack size=10
+	Output:  9
+
+Example 2:
+	Input:  [2,3,5,7], backpack size=12
+	Output:  12
+	
+Challenge
+O(n x m) time and O(m) memory.
+
+O(n x m) memory is also acceptable if you do not know how to optimize memory.
+
+Notice
+You can not divide any item into small pieces.
+
+dp[n][m]: 考虑了前n个物品后，能否装满刚好 m 的空间
+最后一步： dp[n][m] = dp[n-1][m-A[n]] （前n-1不够，最后一个够） | dp[n-1][m] (前n-1就够)
+
+转移方程：dp[i][j] = dp[i-1][j-A[i]] | dp[i-1][j]
+
+初始条件：dp[i][0] = true 不管多少个物品都能刚好装满0个空间, else false 其他都是 false
+
+m = 10, [2,9,5,6,4]
+
+dp[i][j] = dp[i - 1][j] | (j >= A[i] && dp[i - 1][j - A[i]])
+
+0        1 2 3 4 5 6 7 8 9 10   (m的那维，刚好装好1，2，3.。。)
+1(true)  0 1 0 0 0 0 0 0 0 0       ... 2
+1        0 1 0 0 0 0 0 0 1 0       ... 9
+1        0 1 0 0 1 0 1 0 1 0       ... 5
+1        0 1 0 0 1 1 1 1 1 0       ... 6
+1        0 1 0 1 1 1 1 1 1 1       ... 4
+原本true的，还是true
+
+三个物品的情况只能由两个物品的情况得到，而不是一个物品的情况得到。
+所以符合滚动数组的情况，只和前面的一个情况有关
+
+dp[j] = dp[j] | dp[j - A[i]]  把dp[i]那一维有关
