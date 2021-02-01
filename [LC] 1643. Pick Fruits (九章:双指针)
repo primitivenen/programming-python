@@ -1,0 +1,93 @@
+Xiaohong went to the orchard to pick fruit. There are 2 baskets that can hold countless fruits, but each baskert can only hold one type of fruit. Start from the tree at any position and pick it to the right. Stop picking when one of the following two conditions occurs, 1. encountered the third type of fruit, no basket can be put, 2. meet the end. Returns the maximum number of fruits that can be picked.The fruit array is represented by arr.
+
+Example
+Example 1:
+
+Input：[1,2,1,3,4,3,5,1,2]
+Output：3
+Explanation：
+Select [1, 2, 1] or [3, 4, 3]. The length is 3.
+Example 2:
+
+Input：[1,2,1,2,1,2,1]
+Output：7
+Explanation：
+Select  [1, 2, 1, 2, 1, 2, 1].The length is 7.
+Notice
+The length of the array does not exceed 100,000
+
+子数组问题：找到一个最长子数组，并且满足子数组内部最多有两种不同的数字
+
+解法一：枚举法，
+求什么，枚举什么
+按起点终点枚举子数组并计算其中不同数字的数量
+
+    def pickFruits(self, arr):
+        # Write your code here.
+        max_length = 0
+        for start in range(len(arr)):
+            for end in range(start, len(arr)):
+                s = set([])      #记录有几种水果
+                for i in range(start, end + 1):
+                    s.add(arr[i])         
+                if len(s) <= 2:     #如果set中没有超过两种水果，我们就更新答案；否则，就不更新答案
+                    max_length =max(max_length, end - start + 1)   #终点-起点+1代表长度
+        return max_length
+
+时间复杂度：O(n^3)
+空间复杂度：O(n)
+
+指针不回头 == 同向双指针
+[1,2,1,3,4,3,5,1,2]
+从1只能到3，所以2也不可能超过3
+假设 i 到 j，有两种水果
+所以 i+1 到 j,最多也只能有两种水果
+
+j 代表的下标一定往前走，不会后退
+两个指针都往前走，不回头
+
+Q:用什么表示“最多两种”
+A.枚举法：set/HashSet
+B.dict/HashMap
+因为使用set/HashSet无法记录水果的数量
+也就无法知道什么时候某个数字不出现在子数组中
+
+使用 dict/HashMap
+增加一个计数器统计 dict/HashMap 中的不同数字数量
+当某个数字出现次数从0变成1，计数器加一
+当某个数字出现次数从1变成0，计数器减一
+
+    def pickFruits(self, arr):
+        from collections import defaultdict
+        j, different_numbers = 0, 0
+        count, max_length = defaultdict(int), 0
+        for i in range(len(arr)):
+            while j < len(arr) and different_numbers < 3:  #i,j匹配
+                count[arr[j]] += 1
+                if count[arr[j]] == 1: #说明拿到一个新的水果
+                    different_numbers += 1  
+                j += 1
+                if different_numbers <= 2: #说明只有i,j匹配才更新max_length
+                #有可能 differentnumbers = 3 出现
+                    max_length = max(max_length, j - i)
+            #移动 i
+            count[arr[i]] -= 1
+            if count[arr[i]] == 0:
+                different_numbers -= 1
+        
+        return max_length
+
+时间复杂度：O(n)
+空间复杂度：O(n)
+
+为什么空间复杂度：   [1234567]
+count[1]=1
+count[2]=1
+count[3]=1 count[1]=0 但即使count[1]=0, count[1]仍然存在
+count1=0
+coutn2=0
+...
+所以空间是O(n)，不是O（2）
+
+
+
