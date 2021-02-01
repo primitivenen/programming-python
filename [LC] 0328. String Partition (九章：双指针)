@@ -1,0 +1,42 @@
+Given a string with all characters in uppercase, please divide the string into as many parts as possible so that each letter appears in only one part. Return an array containing the length of each part.
+
+Example
+Example 1:
+
+Input:
+"MPMPCPMCMDEFEGDEHINHKLIN"
+Output:
+[9,7,8]
+Explanation:
+"MPMPCPMCM"
+"DEFEGDE"
+"HINHKLIN"
+Notice
+S.length \leq 1000S.length≤1000
+
+子串的终点如何得到:
+必须找到串中每个字符最后一次出现的位置
+
+两个指针都在往前走=》同向双指针
+
+解法：双指针
+有别于以往的双指针，
+本题不需要枚举左指针位置，而是左指针在向前跳跃
+所以可以将外层的 for 改为 while
+
+    def splitString(self, s):
+        last_position = {}
+        for i in range(len(s)):
+            last_position[s[i]] = i
+            
+        i, j, result = 0, 0, []
+        while i < len(s):
+            start = i
+            j = last_position[s[i]]
+            while j < len(s) and i < j:
+                j = max(j, last_position[s[i]])
+                i += 1
+            result.append(j - start + 1)
+            i += 1
+            
+        return result
