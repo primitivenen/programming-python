@@ -40,3 +40,6 @@ S.length \leq 1000S.length≤1000
             i += 1
             
         return result
+        
+时间复杂度：O(n)
+空间复杂度：O(|arr|)
